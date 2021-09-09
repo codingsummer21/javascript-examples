@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <h1 id="title"></h1>
+    </div>
+    <div>
+        <input id="title_field" type="text" />
+        <button onclick="setTitle()">Set Title</button>
+    </div>
+
+    <script>
+        function setTitle() {
+            // read text field content
+            let title = document.getElementById("title_field").value 
+
+            // if not empty, set title
+            if(title.length > 0) {
+                let h = document.getElementById("title")
+                h.innerHTML = title
+            }
+        }
+    </script>
+    
+</body>
+</html>
