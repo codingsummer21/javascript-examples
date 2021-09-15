@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Quiz</h1>
+    <div>
+        <button id='start-btn' onclick="getQuiz()">Start</button>
+    </div>
+    <div id='score'></div>
+    <div id='question'></div>
+
+    <script>
+        let score = 0
+        let currentQuestion = 0
+        let questions = []
+
+        function getQuiz() {
+            document.getElementById('score').innerHTML = ""
+            score = 0
+            document.getElementById('start-btn').disabled = true
+            fetch('https://opentdb.com/api.php?amount=10&type=multiple')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    questions = data['results']
+                    currentQuestion = 0
+                    displayQuestion()
+                })
+        }
+
+        function displayQuestion() {
+            let display = "<div>" + (currentQuestion+1) + "/10</div>" 
+            display += "<div>" + questions[currentQuestion]['question'] + "</div>"
+            let r = Math.floor(Math.random() * 4)
+            let correct = questions[currentQuestion]['correct_answer']
+            for(let i = 0; i < 3; i++) {
+                if(r == i) {
+                    display += "<input type='radio' name='answer' value='" + correct + "'> " + correct
+                }
+                let wrong = questions[currentQuestion]['incorrect_answers'][i]
+                display += "<input type='radio'  name='answer' value='" + wrong +"'> " + wrong
+            }
+            if(r == 3) {
+                display += "<input type='radio'  name='answer' value='" + correct + "'> " + correct
+            }
+            display += "<div><button onclick='submitAnswer()'>Submit</button></div>"
+            document.getElementById('question').innerHTML = display
+        }
+
+        function submitAnswer() {
+            // check answer and increase score
+            answer = document.querySelector('input[name="answer"]:checked').value
+            console.log("Selected answer = " + answer)
+            console.log("Correct answer = " + questions[currentQuestion]['correct_answer'])
+            if(answer == questions[currentQuestion]['correct_answer']) {
+                score++
+            }
+            currentQuestion++
+            if(currentQuestion == 10) {
+                document.getElementById('start-btn').disabled = false
+                displayScore()
+            }
+            else {
+                displayQuestion()
+            }
+        }
+
+        function displayScore() {
+            document.getElementById('question').innerHTML = "" 
+            let display = "<h1>Score: " + score + "/10</h1>"
+            document.getElementById('score').innerHTML = display
+        }
+    </script>
+    
+</body>
+</html>
